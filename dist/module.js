@@ -53617,7 +53617,6 @@ var processDataES = function processDataES(data) {
       timeSeries[item.hash_id].push(dayjs__WEBPACK_IMPORTED_MODULE_0___default.a.unix(item.timestamp).tz('Europe/Berlin').format('YYYY-MM-DDTHH:mm:s'));
     }
   });
-  console.log('process data ', timeSeries);
   var returnData = Object.keys(timeSeries).map(function (hash, index) {
     return {
       id: hash,

@@ -25,7 +25,6 @@ export const processDataES = (data: Array<{ hash_id: string; vendor: string; tim
     }
   });
 
-  console.log('process data ', timeSeries);
   const returnData = Object.keys(timeSeries).map((hash, index) => ({
     id: hash,
     data: timeSeries[hash]
