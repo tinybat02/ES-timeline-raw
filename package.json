@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@nivo/line": "^0.63.1",
-    "dayjs": "^1.9.4"
+    "dayjs": "^1.9.4",
+    "react-compound-slider": "^3.3.1"
   }
 }
