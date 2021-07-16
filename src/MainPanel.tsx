@@ -23,7 +23,7 @@ export class MainPanel extends PureComponent<Props, State> {
   componentDidMount() {
     if (this.props.data.series.length > 0) {
       const { buffer } = this.props.data.series[0].fields[0].values as Buffer;
-      const { data } = processDataES(buffer, 0);
+      const { data } = processDataES(buffer, 0, this.props.options.timezone);
       this.setState({ data, loading: false, min_duration: 0 });
     }
   }
@@ -33,7 +33,7 @@ export class MainPanel extends PureComponent<Props, State> {
       this.setState(prevState => ({ ...prevState, data: null, loading: true }));
       if (this.props.data.series.length > 0) {
         const { buffer } = this.props.data.series[0].fields[0].values as Buffer;
-        const { data } = processDataES(buffer, this.state.min_duration);
+        const { data } = processDataES(buffer, this.state.min_duration, this.props.options.timezone);
 
         setTimeout(() => {
           this.setState(prevState => ({ ...prevState, data, loading: false }));
@@ -44,7 +44,7 @@ export class MainPanel extends PureComponent<Props, State> {
     if (prevState.min_duration != this.state.min_duration) {
       this.setState(prevState => ({ ...prevState, data: null, loading: true }));
       const { buffer } = this.props.data.series[0].fields[0].values as Buffer;
-      const { data } = processDataES(buffer, this.state.min_duration);
+      const { data } = processDataES(buffer, this.state.min_duration, this.props.options.timezone);
 
       setTimeout(() => {
         this.setState(prevState => ({ ...prevState, data, loading: false }));

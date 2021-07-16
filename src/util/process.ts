@@ -6,28 +6,10 @@ dayjs.extend(timezone);
 
 export const processDataES = (
   data: Array<{ hash_id: string; vendor: string; timestamp: number }>,
-  min_duration: number
+  min_duration: number,
+  timezone: string
 ) => {
-  // const timeSeries: { [key: string]: string[] } = {};
   const timeSeries: { [key: string]: number[] } = {};
-
-  // data.map(item => {
-  //   if (!timeSeries[item.hash_id]) {
-  //     timeSeries[item.hash_id] = [
-  //       dayjs
-  //         .unix(item.timestamp)
-  //         .tz('Europe/Berlin')
-  //         .format('YYYY-MM-DDTHH:mm:s'),
-  //     ];
-  //   } else {
-  //     timeSeries[item.hash_id].push(
-  //       dayjs
-  //         .unix(item.timestamp)
-  //         .tz('Europe/Berlin')
-  //         .format('YYYY-MM-DDTHH:mm:s')
-  //     );
-  //   }
-  // });
 
   data.map(item => {
     if (!timeSeries[item.hash_id]) {
@@ -48,7 +30,7 @@ export const processDataES = (
           .map(timestamp => ({
             x: dayjs
               .unix(timestamp)
-              .tz('Europe/Berlin')
+              .tz(timezone)
               .format('YYYY-MM-DDTHH:mm:s'),
             y: index + 1,
           })),
@@ -64,7 +46,7 @@ export const processDataES = (
             .map(timestamp => ({
               x: dayjs
                 .unix(timestamp)
-                .tz('Europe/Berlin')
+                .tz(timezone)
                 .format('YYYY-MM-DDTHH:mm:s'),
               y: index + 1,
             })),
@@ -72,12 +54,5 @@ export const processDataES = (
     }
   });
 
-  // const returnData = Object.keys(timeSeries).map((hash, index) => ({
-  //   id: hash,
-  //   data: timeSeries[hash]
-  //     .slice()
-  //     .reverse()
-  //     .map(timePoint => ({ x: timePoint, y: index + 1 })),
-  // }));
   return { data: returnData };
 };

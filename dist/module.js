@@ -57547,30 +57547,55 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__);
+
+ //@ts-ignore
 
 
+var MainEditor = function MainEditor(_a) {
+  var options = _a.options,
+      onOptionsChange = _a.onOptionsChange;
 
-var MainEditor =
-/** @class */
-function (_super) {
-  Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(MainEditor, _super);
+  var _b = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__read"])(Object(react__WEBPACK_IMPORTED_MODULE_1__["useState"])(options), 2),
+      inputs = _b[0],
+      setInputs = _b[1];
 
-  function MainEditor() {
-    return _super !== null && _super.apply(this, arguments) || this;
-  }
+  var handleChange = function handleChange(e) {
+    var _a = e.target,
+        name = _a.name,
+        value = _a.value,
+        type = _a.type;
+    setInputs(function (prevState) {
+      var _a;
 
-  MainEditor.prototype.render = function () {
-    return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "section gf-form-group"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h5", {
-      className: "section-heading"
-    }, "Display"));
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, prevState), (_a = {}, _a[name] = type == 'number' ? parseInt(value) : value, _a));
+    });
   };
 
-  return MainEditor;
-}(react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"]);
+  var handleSubmit = function handleSubmit() {
+    onOptionsChange(inputs);
+  };
 
-
+  return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["PanelOptionsGroup"], null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "editor-row"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+    className: "section gf-form-group"
+  }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h5", {
+    className: "section-heading"
+  }, "Time Settings"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["FormField"], {
+    label: "Timezone",
+    labelWidth: 10,
+    inputWidth: 40,
+    type: "text",
+    name: "timezone",
+    value: inputs.timezone,
+    onChange: handleChange
+  }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+    className: "btn btn-inverse",
+    onClick: handleSubmit
+  }, "Submit"));
+};
 
 /***/ }),
 
@@ -57626,7 +57651,7 @@ function (_super) {
   MainPanel.prototype.componentDidMount = function () {
     if (this.props.data.series.length > 0) {
       var buffer = this.props.data.series[0].fields[0].values.buffer;
-      var data = Object(_util_process__WEBPACK_IMPORTED_MODULE_2__["processDataES"])(buffer, 0).data;
+      var data = Object(_util_process__WEBPACK_IMPORTED_MODULE_2__["processDataES"])(buffer, 0, this.props.options.timezone).data;
       this.setState({
         data: data,
         loading: false,
@@ -57648,7 +57673,7 @@ function (_super) {
 
       if (this.props.data.series.length > 0) {
         var buffer = this.props.data.series[0].fields[0].values.buffer;
-        var data_1 = Object(_util_process__WEBPACK_IMPORTED_MODULE_2__["processDataES"])(buffer, this.state.min_duration).data;
+        var data_1 = Object(_util_process__WEBPACK_IMPORTED_MODULE_2__["processDataES"])(buffer, this.state.min_duration, this.props.options.timezone).data;
         setTimeout(function () {
           _this.setState(function (prevState) {
             return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, prevState), {
@@ -57668,7 +57693,7 @@ function (_super) {
         });
       });
       var buffer = this.props.data.series[0].fields[0].values.buffer;
-      var data_2 = Object(_util_process__WEBPACK_IMPORTED_MODULE_2__["processDataES"])(buffer, this.state.min_duration).data;
+      var data_2 = Object(_util_process__WEBPACK_IMPORTED_MODULE_2__["processDataES"])(buffer, this.state.min_duration, this.props.options.timezone).data;
       setTimeout(function () {
         _this.setState(function (prevState) {
           return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, prevState), {
@@ -58326,7 +58351,9 @@ var plugin = new _grafana_ui__WEBPACK_IMPORTED_MODULE_0__["PanelPlugin"](_MainPa
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaults", function() { return defaults; });
-var defaults = {};
+var defaults = {
+  timezone: 'Europe/Berlin'
+};
 
 /***/ }),
 
@@ -58351,26 +58378,8 @@ __webpack_require__.r(__webpack_exports__);
 
 dayjs__WEBPACK_IMPORTED_MODULE_0___default.a.extend(dayjs_plugin_utc__WEBPACK_IMPORTED_MODULE_1___default.a);
 dayjs__WEBPACK_IMPORTED_MODULE_0___default.a.extend(dayjs_plugin_timezone__WEBPACK_IMPORTED_MODULE_2___default.a);
-var processDataES = function processDataES(data, min_duration) {
-  // const timeSeries: { [key: string]: string[] } = {};
-  var timeSeries = {}; // data.map(item => {
-  //   if (!timeSeries[item.hash_id]) {
-  //     timeSeries[item.hash_id] = [
-  //       dayjs
-  //         .unix(item.timestamp)
-  //         .tz('Europe/Berlin')
-  //         .format('YYYY-MM-DDTHH:mm:s'),
-  //     ];
-  //   } else {
-  //     timeSeries[item.hash_id].push(
-  //       dayjs
-  //         .unix(item.timestamp)
-  //         .tz('Europe/Berlin')
-  //         .format('YYYY-MM-DDTHH:mm:s')
-  //     );
-  //   }
-  // });
-
+var processDataES = function processDataES(data, min_duration, timezone) {
+  var timeSeries = {};
   data.map(function (item) {
     if (!timeSeries[item.hash_id]) {
       timeSeries[item.hash_id] = [item.timestamp];
@@ -58385,7 +58394,7 @@ var processDataES = function processDataES(data, min_duration) {
         id: hash,
         data: timeSeries[hash].slice().reverse().map(function (timestamp) {
           return {
-            x: dayjs__WEBPACK_IMPORTED_MODULE_0___default.a.unix(timestamp).tz('Europe/Berlin').format('YYYY-MM-DDTHH:mm:s'),
+            x: dayjs__WEBPACK_IMPORTED_MODULE_0___default.a.unix(timestamp).tz(timezone).format('YYYY-MM-DDTHH:mm:s'),
             y: index + 1
           };
         })
@@ -58396,20 +58405,13 @@ var processDataES = function processDataES(data, min_duration) {
         id: hash,
         data: timeSeries[hash].slice().reverse().map(function (timestamp) {
           return {
-            x: dayjs__WEBPACK_IMPORTED_MODULE_0___default.a.unix(timestamp).tz('Europe/Berlin').format('YYYY-MM-DDTHH:mm:s'),
+            x: dayjs__WEBPACK_IMPORTED_MODULE_0___default.a.unix(timestamp).tz(timezone).format('YYYY-MM-DDTHH:mm:s'),
             y: index + 1
           };
         })
       });
     }
-  }); // const returnData = Object.keys(timeSeries).map((hash, index) => ({
-  //   id: hash,
-  //   data: timeSeries[hash]
-  //     .slice()
-  //     .reverse()
-  //     .map(timePoint => ({ x: timePoint, y: index + 1 })),
-  // }));
-
+  });
   return {
     data: returnData
   };
